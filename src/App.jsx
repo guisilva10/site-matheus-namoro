@@ -275,10 +275,10 @@ export default function App() {
               >
                 <Heart className="w-16 h-16 text-romantic-500 mx-auto fill-current" />
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-                  Pour ma princesse
+                  Pour ma princesse Yasmine ❤️
                 </h1>
                 <p className="text-xl md:text-2xl text-romantic-200 dancing-script">
-                  Yasmine ❤️
+                  Depuis le début de notre amour
                 </p>
               </motion.div>
 
