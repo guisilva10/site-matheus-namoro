@@ -278,7 +278,7 @@ export default function App() {
                   Pour ma princesse
                 </h1>
                 <p className="text-xl md:text-2xl text-romantic-200 dancing-script">
-                  Depuis le début de notre amour
+                  Yasmine ❤️
                 </p>
               </motion.div>
 
