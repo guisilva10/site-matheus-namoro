@@ -9,6 +9,8 @@ import {
   Play,
   Pause,
   Disc,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { clsx } from "clsx";
@@ -450,21 +452,40 @@ export default function App() {
                     </p>
                   </div>
 
-                  {/* Indicadores de navegação */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 pointer-events-auto">
-                    {moments.map((m, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentMoment(m)}
-                        className={cn(
-                          "w-2 h-2 rounded-full transition-all",
-                          currentMoment.src === m.src
-                            ? "bg-romantic-500 w-8"
-                            : "bg-white/50 hover:bg-white/70",
-                        )}
-                        aria-label={`Ver foto ${i + 1}`}
-                      />
-                    ))}
+                  {/* Setinhas de navegação */}
+                  <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 z-10 pointer-events-none">
+                    <button
+                      onClick={() => {
+                        const currentIndex = moments.findIndex(
+                          (m) => m.src === currentMoment.src,
+                        );
+                        const prevIndex =
+                          currentIndex > 0
+                            ? currentIndex - 1
+                            : moments.length - 1;
+                        setCurrentMoment(moments[prevIndex]);
+                      }}
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-romantic-500/80 hover:bg-romantic-500 flex items-center justify-center transition-all pointer-events-auto shadow-lg"
+                      aria-label="Foto anterior"
+                    >
+                      <ChevronLeft className="w-6 h-6 text-white" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        const currentIndex = moments.findIndex(
+                          (m) => m.src === currentMoment.src,
+                        );
+                        const nextIndex =
+                          currentIndex < moments.length - 1
+                            ? currentIndex + 1
+                            : 0;
+                        setCurrentMoment(moments[nextIndex]);
+                      }}
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-romantic-500/80 hover:bg-romantic-500 flex items-center justify-center transition-all pointer-events-auto shadow-lg"
+                      aria-label="Próxima foto"
+                    >
+                      <ChevronRight className="w-6 h-6 text-white" />
+                    </button>
                   </div>
                 </motion.div>
                 <div className="flex justify-start md:justify-center gap-4 overflow-x-auto pb-6 px-2 no-scrollbar">
@@ -795,25 +816,33 @@ const TimelineEvent = memo(function TimelineEvent({
               ))}
             </div>
 
-            {/* Indicadores interativos (apenas se houver múltiplos itens) */}
+            {/* Setinhas de navegação (apenas se houver múltiplos itens) */}
             {media.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                {media.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      scrollToIndex(i);
-                    }}
-                    className={cn(
-                      "rounded-full transition-all",
-                      activeIndex === i
-                        ? "w-8 h-2 bg-romantic-500"
-                        : "w-2 h-2 bg-white/50 hover:bg-white/70",
-                    )}
-                    aria-label={`Ver item ${i + 1}`}
-                  />
-                ))}
+              <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 z-10">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const prevIndex =
+                      activeIndex > 0 ? activeIndex - 1 : media.length - 1;
+                    scrollToIndex(prevIndex);
+                  }}
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-romantic-500/80 hover:bg-romantic-500 flex items-center justify-center transition-all shadow-lg"
+                  aria-label="Item anterior"
+                >
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const nextIndex =
+                      activeIndex < media.length - 1 ? activeIndex + 1 : 0;
+                    scrollToIndex(nextIndex);
+                  }}
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-romantic-500/80 hover:bg-romantic-500 flex items-center justify-center transition-all shadow-lg"
+                  aria-label="Próximo item"
+                >
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </button>
               </div>
             )}
           </div>
