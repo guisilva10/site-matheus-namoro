@@ -165,7 +165,6 @@ export default function App() {
             trigger: section,
             start: "top 88%",
             toggleActions: "play none none none",
-            onEnter: () => ScrollTrigger.refresh(), // Refresh when a section enters
           },
         },
       );
