@@ -36,6 +36,7 @@ export default function OpeningScreen({ onEnter }) {
       "/images/08.jpeg",
       "/images/15.jpeg",
       "/images/22.jpeg",
+      "/images/27.jpeg",
     ].map((src) => {
       const img = new Image();
       img.src = src;

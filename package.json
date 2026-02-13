@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "convert-videos": "node convert-videos.js"
+    "convert-videos": "node convert-videos.js",
+    "compress-videos": "node compress-videos.js",
+    "upload-cloudinary": "node upload-to-cloudinary.js"
   },
   "dependencies": {
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
+    "dotenv": "^17.3.1",
     "framer-motion": "^12.34.0",
     "gsap": "^3.12.5",
     "lucide-react": "^0.475.0",

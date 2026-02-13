@@ -4,7 +4,14 @@
       "Bash(ffmpeg:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(ls:*)",
+      "Bash(git ls-files:*)",
+      "Bash(find:*)",
+      "Bash(pnpm add:*)",
+      "Bash(node upload-to-cloudinary.js:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
