@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-[#0c0004] text-white overflow-x-hidden;
+    font-family: "Outfit", sans-serif;
+  }
+}
+
+.dancing-script {
+  font-family: "Dancing Script", cursive;
+}
+
+.indie-flower {
+  font-family: "Indie Flower", cursive;
+}
+
+.glass {
+  @apply bg-white/5 backdrop-blur-md border border-white/10;
+}
+
+.heart-bg {
+  @apply fixed inset-0 pointer-events-none z-0 overflow-hidden;
+}
+
+.heart-particle {
+  @apply absolute -bottom-12 pointer-events-none;
+  animation: heartUp linear forwards;
+}
+
+@keyframes heartUp {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+#canvas {
+  @apply fixed inset-0 z-[100] cursor-pointer;
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+}
+
+#enter-btn {
+  @apply fixed z-[101] px-10 py-4 bg-romantic-500/80 text-white rounded-full font-semibold transition-all duration-700 opacity-0 pointer-events-none;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+}
+
+#enter-btn.visible {
+  @apply opacity-100 pointer-events-auto;
+}
+
+#enter-btn:hover {
+  @apply bg-romantic-500 scale-110;
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.6);
+}
+
+.main-content {
+  @apply hidden opacity-0 translate-y-5 scale-95 transition-all duration-1000;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.main-content.active {
+  @apply block opacity-100 translate-y-0 scale-100;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
