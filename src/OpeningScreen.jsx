@@ -113,8 +113,8 @@ export default function OpeningScreen({ onEnter }) {
     const createFallingElement = () => {
       const isMobile = window.innerWidth < 768;
       const rand = Math.random();
-      // More phrases, fewer images on mobile for performance
-      const type = rand < (isMobile ? 0.85 : 0.6) ? "phrase" : rand < 0.9 ? "image" : "heart";
+      // Mais imagens: 50% frases, 30% fotos, 20% estrelas
+      const type = rand < 0.5 ? "phrase" : rand < 0.8 ? "heart" : "image";
       const minZ = focalLength * 1.5;
       const maxZ = focalLength * 5;
       const z = minZ + Math.random() * (maxZ - minZ);
@@ -122,15 +122,17 @@ export default function OpeningScreen({ onEnter }) {
       const worldH = (window.innerHeight / focalLength) * maxZ;
 
       let content,
-        baseSize = isMobile ? 20 : 30;
+        baseSize = isMobile ? 25 : 30;
       if (type === "phrase") {
         content = phrases[Math.floor(Math.random() * phrases.length)];
+        baseSize = isMobile ? 25 : 30;
       } else if (type === "heart") {
         content = heartImgs[Math.floor(Math.random() * heartImgs.length)];
-        baseSize = isMobile ? 28 : 40;
+        // Imagens maiores
+        baseSize = isMobile ? 50 : 70;
       } else {
         content = starImgNode;
-        baseSize = isMobile ? 20 : 30;
+        baseSize = isMobile ? 35 : 50;
       }
 
       fallingElements.push({
@@ -138,8 +140,9 @@ export default function OpeningScreen({ onEnter }) {
         content,
         z,
         baseSize,
-        x: (Math.random() - 0.5) * worldW * 1.2,
-        y: (Math.random() - 0.5) * worldH * 1.2,
+        // Mais centralizado - reduzindo o spread
+        x: (Math.random() - 0.5) * worldW * 0.9,
+        y: (Math.random() - 0.5) * worldH * 0.9,
         speedZ: Math.random() * (isMobile ? 1.5 : 2) + 1,
       });
     };
@@ -226,7 +229,13 @@ export default function OpeningScreen({ onEnter }) {
           }
         }
 
-        ctx.globalAlpha = Math.max(0, Math.min(1, scale * 1.2));
+        // Imagens mais visíveis
+        const opacity =
+          el.type === "phrase"
+            ? Math.max(0, Math.min(1, scale * 1.2))
+            : Math.max(0, Math.min(1, scale * 1.5));
+
+        ctx.globalAlpha = opacity;
 
         if (el.type === "phrase") {
           ctx.fillStyle = color;
@@ -242,7 +251,15 @@ export default function OpeningScreen({ onEnter }) {
         ) {
           try {
             ctx.shadowBlur = 0;
+            // Adicionar bordas arredondadas nas imagens
+            ctx.save();
+            ctx.beginPath();
+            const radius = size * 0.15;
+            ctx.roundRect(x - size / 2, y - size / 2, size, size, radius);
+            ctx.closePath();
+            ctx.clip();
             ctx.drawImage(el.content, x - size / 2, y - size / 2, size, size);
+            ctx.restore();
           } catch (e) {}
         }
       }
@@ -261,11 +278,18 @@ export default function OpeningScreen({ onEnter }) {
     // Init
     resize();
     window.addEventListener("resize", resize);
-    // Reduce falling elements on mobile
+    // Mais elementos iniciais
     const isMobile = window.innerWidth < 768;
-    const elementCount = isMobile ? 15 : 35;
+    const elementCount = isMobile ? 30 : 50;
     for (let i = 0; i < elementCount; i++) createFallingElement();
     shootingTimer = setInterval(createShootingStar, isMobile ? 1500 : 900);
+
+    // Criar novos elementos continuamente para manter a tela cheia
+    const fallingTimer = setInterval(
+      createFallingElement,
+      isMobile ? 150 : 100,
+    );
+
     draw();
 
     // Show button after 3s
@@ -275,6 +299,7 @@ export default function OpeningScreen({ onEnter }) {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
       clearInterval(shootingTimer);
+      clearInterval(fallingTimer);
       clearTimeout(btnTimer);
     };
   }, []); // Empty dependency array: Run once on mount

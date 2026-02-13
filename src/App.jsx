@@ -23,6 +23,7 @@ function cn(...inputs) {
 
 export default function App() {
   const [hasEntered, setHasEntered] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentMoment, setCurrentMoment] = useState({
     type: "image",
@@ -42,7 +43,7 @@ export default function App() {
       visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" },
+        transition: { duration: shouldReduceMotion ? 0 : 0.3, ease: "easeOut" },
       },
     }),
     [shouldReduceMotion],
@@ -54,7 +55,7 @@ export default function App() {
       visible: {
         opacity: 1,
         scale: 1,
-        transition: { duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" },
+        transition: { duration: shouldReduceMotion ? 0 : 0.3, ease: "easeOut" },
       },
     }),
     [shouldReduceMotion],
@@ -106,6 +107,26 @@ export default function App() {
     ],
     [],
   );
+
+  // Pré-carregar todas as imagens ao montar o componente
+  useEffect(() => {
+    const imagesToLoad = moments.map((m) => m.src);
+    let loadedCount = 0;
+
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === imagesToLoad.length) {
+        setIsReady(true);
+      }
+    };
+
+    imagesToLoad.forEach((src) => {
+      const img = new Image();
+      img.onload = checkAllLoaded;
+      img.onerror = checkAllLoaded; // Continue mesmo se houver erro
+      img.src = src;
+    });
+  }, [moments]);
 
   // --- COUNTDOWN LOGIC ---
   const [timeLeft, setTimeLeft] = useState({
@@ -203,15 +224,14 @@ export default function App() {
       <audio ref={audioRef} src="music.mp3" loop />
 
       {/* Opening Screen */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {!hasEntered && (
           <motion.div
             key="opening"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
             className="fixed inset-0 z-[100]"
-            style={{ willChange: "opacity, transform" }}
           >
             <OpeningScreen onEnter={handleEnter} />
           </motion.div>
@@ -222,17 +242,16 @@ export default function App() {
       <div ref={heartParticlesRef} className="heart-bg" />
 
       {/* Main App */}
-      <AnimatePresence mode="wait">
-        {hasEntered && (
+      <AnimatePresence>
+        {hasEntered && isReady && (
           <motion.main
             key="main"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             id="main-app"
             ref={mainAppRef}
             className="main-content active relative z-10"
-            style={{ willChange: "opacity, transform" }}
           >
             {/* Section: Hero */}
             <section
@@ -420,15 +439,32 @@ export default function App() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.2 }}
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      loading="eager"
                     />
                   </AnimatePresence>
                   <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none">
                     <p className="text-2xl font-semibold italic text-romantic-100">
                       {currentMoment.desc || "Notre vibe"}
                     </p>
+                  </div>
+
+                  {/* Indicadores de navegação */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 pointer-events-auto">
+                    {moments.map((m, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentMoment(m)}
+                        className={cn(
+                          "w-2 h-2 rounded-full transition-all",
+                          currentMoment.src === m.src
+                            ? "bg-romantic-500 w-8"
+                            : "bg-white/50 hover:bg-white/70"
+                        )}
+                        aria-label={`Ver foto ${i + 1}`}
+                      />
+                    ))}
                   </div>
                 </motion.div>
                 <div className="flex justify-start md:justify-center gap-4 overflow-x-auto pb-6 px-2 no-scrollbar">
@@ -446,6 +482,7 @@ export default function App() {
                       <img
                         src={m.src}
                         className="w-full h-full object-cover pointer-events-none"
+                        loading="eager"
                       />
                     </button>
                   ))}
@@ -506,7 +543,7 @@ export default function App() {
                   <TimelineEvent
                     date="02 Janvier 2026"
                     title="Aventures d'été"
-                    desc="When I almost crashed the car, with us kissing"
+                    desc="Our last moments together"
                     media={[
                       createVideoMedia("/videos/dia-02/01.mp4"),
                       createVideoMedia("/videos/dia-02/02.mp4"),
@@ -581,7 +618,7 @@ const VideoItem = memo(
             video.pause();
           }
         },
-        { threshold: 0.3, rootMargin: "50px" }
+        { threshold: 0.3, rootMargin: "50px" },
       );
 
       observer.observe(video);
@@ -655,13 +692,43 @@ const TimelineEvent = memo(function TimelineEvent({
   side = "left",
 }) {
   const isLeft = side === "left";
+  const carouselRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Detectar qual item está visível durante o scroll
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel || !media || media.length <= 1) return;
+
+    const handleScroll = () => {
+      const scrollLeft = carousel.scrollLeft;
+      const itemWidth = carousel.offsetWidth;
+      const index = Math.round(scrollLeft / itemWidth);
+      setActiveIndex(index);
+    };
+
+    carousel.addEventListener("scroll", handleScroll);
+    return () => carousel.removeEventListener("scroll", handleScroll);
+  }, [media]);
+
+  const scrollToIndex = useCallback((index) => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const itemWidth = carousel.offsetWidth;
+    carousel.scrollTo({
+      left: index * itemWidth,
+      behavior: "smooth",
+    });
+    setActiveIndex(index);
+  }, []);
 
   return (
     <motion.div
       initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className={cn(
         "relative flex items-center justify-between w-full mb-20",
         !isLeft && "md:flex-row-reverse",
@@ -698,7 +765,10 @@ const TimelineEvent = memo(function TimelineEvent({
         {/* Media Carousel */}
         {media && media.length > 0 && (
           <div className="rounded-xl md:rounded-2xl w-full h-80 md:h-96 shadow-2xl border border-white/10 overflow-hidden relative bg-black/50">
-            <div className="flex w-full h-full overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth">
+            <div
+              ref={carouselRef}
+              className="flex w-full h-full overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth"
+            >
               {media.map((item, i) => (
                 <div
                   key={i}
@@ -717,13 +787,23 @@ const TimelineEvent = memo(function TimelineEvent({
               ))}
             </div>
 
-            {/* Indicators (only if multiple) */}
+            {/* Indicadores interativos (apenas se houver múltiplos itens) */}
             {media.length > 1 && (
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                 {media.map((_, i) => (
-                  <div
+                  <button
                     key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-white/50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToIndex(i);
+                    }}
+                    className={cn(
+                      "rounded-full transition-all",
+                      activeIndex === i
+                        ? "w-8 h-2 bg-romantic-500"
+                        : "w-2 h-2 bg-white/50 hover:bg-white/70"
+                    )}
+                    aria-label={`Ver item ${i + 1}`}
                   />
                 ))}
               </div>
