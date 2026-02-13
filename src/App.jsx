@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, useState, memo, useMemo, useCallback } from "react";
 import {
   Infinity as InfinityIcon,
   Heart,
@@ -10,7 +10,7 @@ import {
   Pause,
   Disc,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import OpeningScreen from "./OpeningScreen";
@@ -32,8 +32,28 @@ export default function App() {
   const audioRef = useRef(null);
   const heartParticlesRef = useRef(null);
   const mainAppRef = useRef(null);
+  const shouldReduceMotion = useReducedMotion();
 
-  const moments = [
+  // Optimized animation variants using only GPU-accelerated properties
+  const fadeInUpVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }
+    }
+  }), [shouldReduceMotion]);
+
+  const scaleInVariants = useMemo(() => ({
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" }
+    }
+  }), [shouldReduceMotion]);
+
+  const moments = useMemo(() => [
     {
       type: "image",
       src: "/images/dia-28.jpeg",
@@ -75,7 +95,7 @@ export default function App() {
       src: "/images/27.jpeg",
       desc: "Last kiss that made me want even more",
     },
-  ];
+  ], []);
 
   // --- COUNTDOWN LOGIC ---
   const [timeLeft, setTimeLeft] = useState({
@@ -110,18 +130,7 @@ export default function App() {
   }, []);
 
   // --- MAIN APP REVEAL ---
-  const handleEnter = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(() => {});
-    }
-
-    setHasEntered(true);
-    window.scrollTo(0, 0);
-    document.body.style.overflowY = "auto";
-    initHeartBackground();
-  };
-
-  const initHeartBackground = () => {
+  const initHeartBackground = useCallback(() => {
     const container = heartParticlesRef.current;
     if (!container) return;
     const symbols = ["❤️", "💖", "💗", "💓", "💕", "∞", "∞"];
@@ -137,40 +146,54 @@ export default function App() {
       const dur = Math.random() * 7 + 6;
       p.style.animationDuration = dur + "s";
       p.style.opacity = (Math.random() * 0.4 + 0.2).toString();
+      p.style.willChange = "transform, opacity";
       container.appendChild(p);
       setTimeout(() => p.remove(), dur * 1000);
     };
 
-    setInterval(createParticle, 500);
-    for (let i = 0; i < 20; i++)
+    // Reduced frequency for better performance
+    setInterval(createParticle, 800);
+    for (let i = 0; i < 15; i++)
       setTimeout(createParticle, Math.random() * 5000);
-  };
+  }, []);
 
-  const toggleMusic = () => {
+  const handleEnter = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+
+    setHasEntered(true);
+    window.scrollTo(0, 0);
+    document.body.style.overflowY = "auto";
+    initHeartBackground();
+  }, [initHeartBackground]);
+
+  const toggleMusic = useCallback(() => {
     if (isPlaying) audioRef.current.pause();
     else audioRef.current.play();
     setIsPlaying(!isPlaying);
-  };
+  }, [isPlaying]);
 
-  const shakeElement = (e) => {
+  const shakeElement = useCallback((e) => {
     const el = e.currentTarget;
     el.classList.add("shake");
     setTimeout(() => el.classList.remove("shake"), 500);
-  };
+  }, []);
 
   return (
     <div className="relative min-h-screen">
       <audio ref={audioRef} src="music.mp3" loop />
 
       {/* Opening Screen */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!hasEntered && (
           <motion.div
             key="opening"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="fixed inset-0 z-[100]"
+            style={{ willChange: "opacity, transform" }}
           >
             <OpeningScreen onEnter={handleEnter} />
           </motion.div>
@@ -181,16 +204,17 @@ export default function App() {
       <div ref={heartParticlesRef} className="heart-bg" />
 
       {/* Main App */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {hasEntered && (
           <motion.main
             key="main"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
             id="main-app"
             ref={mainAppRef}
             className="main-content active relative z-10"
+            style={{ willChange: "opacity, transform" }}
           >
             {/* Section: Hero */}
             <section
@@ -198,9 +222,10 @@ export default function App() {
               className="min-h-screen flex flex-col items-center justify-center p-6 text-center space-y-8"
             >
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                variants={scaleInVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className="space-y-4 animate-float"
               >
                 <Heart className="w-16 h-16 text-romantic-500 mx-auto fill-current" />
@@ -213,9 +238,10 @@ export default function App() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                variants={fadeInUpVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full max-w-2xl px-2"
               >
                 {[
@@ -242,9 +268,10 @@ export default function App() {
             {/* Section: Music */}
             <section id="music" className="py-20 px-6 max-w-4xl mx-auto">
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                variants={fadeInUpVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className="glass p-8 md:p-12 rounded-[3rem] relative overflow-hidden group"
               >
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-romantic-500/10 blur-3xl group-hover:bg-romantic-500/20 transition-all"></div>
@@ -286,8 +313,9 @@ export default function App() {
             {/* Section: Quote */}
             <section id="quote" className="py-20 px-6 max-w-3xl mx-auto">
               <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                variants={scaleInVariants}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative overflow-hidden group"
               >
@@ -339,18 +367,20 @@ export default function App() {
               className="py-20 px-6 max-w-full mx-auto text-center overflow-hidden"
             >
               <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                variants={fadeInUpVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className="text-3xl md:text-5xl font-bold mb-8 inline-block relative text-white dancing-script"
               >
                 Notre vibe infinie
                 <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-romantic-500 to-transparent" />
               </motion.h2>
               <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
+                variants={scaleInVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className="text-romantic-300 mb-12 text-lg"
               >
                 <span>{timeLeft.d}</span> jours de pur bonheur ✨
@@ -358,16 +388,25 @@ export default function App() {
 
               <div className="space-y-8">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
+                  variants={scaleInVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
                   className="glass rounded-[2.5rem] overflow-hidden aspect-[3/4] md:aspect-video relative group border-2 border-white/10 shadow-2xl mx-auto max-w-sm md:max-w-4xl"
+                  style={{ willChange: "opacity, transform" }}
                 >
-                  <img
-                    key={currentMoment.src}
-                    src={currentMoment.src}
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                  />
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentMoment.src}
+                      src={currentMoment.src}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </AnimatePresence>
                   <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none">
                     <p className="text-2xl font-semibold italic text-romantic-100">
                       {currentMoment.desc || "Notre vibe"}
@@ -402,9 +441,10 @@ export default function App() {
               className="py-20 px-6 max-w-4xl mx-auto pb-40"
             >
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                variants={fadeInUpVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className="text-center mb-28 space-y-4"
               >
                 <Clock className="w-10 h-10 text-romantic-400 mx-auto mb-4" />
@@ -427,14 +467,14 @@ export default function App() {
                     date="30 décembre 2025"
                     title="Nos moments"
                     desc="Our First kiss"
-                    media={[{ type: "video", src: "/videos/dia-30.MOV" }]}
+                    media={[{ type: "video", src: "/videos/dia-30.mp4" }]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
                   <TimelineEvent
                     date="31 décembre 2025"
                     title="Nouvel An"
                     desc="The best turn of the year"
-                    media={[{ type: "video", src: "/videos/dia-31.mov" }]}
+                    media={[{ type: "video", src: "/videos/dia-31.mp4" }]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
                   <TimelineEvent
@@ -442,7 +482,7 @@ export default function App() {
                     date="01 Janvier 2026"
                     title="Premier Jour"
                     desc="Our first sunset of the year"
-                    media={[{ type: "video", src: "/videos/dia-01/01.mov" }]}
+                    media={[{ type: "video", src: "/videos/dia-01/01.mp4" }]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
                   <TimelineEvent
@@ -450,11 +490,11 @@ export default function App() {
                     title="Aventures d'été"
                     desc="When I almost crashed the car, with us kissing"
                     media={[
-                      { type: "video", src: "/videos/dia-02/01.MOV" },
-                      { type: "video", src: "/videos/dia-02/02.MOV" },
-                      { type: "video", src: "/videos/dia-02/03.MOV" },
-                      { type: "video", src: "/videos/dia-02/05.MOV" },
-                      { type: "video", src: "/videos/dia-02/06.MOV" },
+                      { type: "video", src: "/videos/dia-02/01.mp4" },
+                      { type: "video", src: "/videos/dia-02/02.mp4" },
+                      { type: "video", src: "/videos/dia-02/03.mp4" },
+                      { type: "video", src: "/videos/dia-02/05.mp4" },
+                      { type: "video", src: "/videos/dia-02/06.mp4" },
                     ]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
@@ -477,9 +517,10 @@ export default function App() {
               </div>
 
               <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
+                variants={scaleInVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
                 className="mt-40 text-center px-6 pb-20"
               >
                 <h3 className="text-3xl md:text-5xl dancing-script text-romantic-300">
@@ -504,6 +545,8 @@ export default function App() {
 
 const VideoItem = memo(({ src }) => {
   const videoRef = useRef(null);
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -515,32 +558,69 @@ const VideoItem = memo(({ src }) => {
           videoRef.current.pause();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.2, rootMargin: "50px" },
     );
 
     if (videoRef.current) observer.observe(videoRef.current);
     return () => observer.disconnect();
   }, [src]);
 
+  const handleError = useCallback(() => {
+    console.error("Video failed to load:", src);
+    setHasError(true);
+    setIsLoading(false);
+  }, [src]);
+
+  const handleLoadedData = useCallback(() => {
+    setIsLoading(false);
+    setHasError(false);
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="w-full h-full bg-gradient-to-br from-romantic-900/50 to-black flex flex-col items-center justify-center p-6">
+        <div className="text-romantic-300 text-center space-y-3">
+          <div className="w-16 h-16 mx-auto rounded-full bg-romantic-500/20 flex items-center justify-center">
+            <Play className="w-8 h-8 text-romantic-400" />
+          </div>
+          <p className="text-sm opacity-70">Vídeo indisponível</p>
+          <p className="text-xs opacity-50 max-w-xs">
+            Este momento está guardado em nossos corações ❤️
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-full bg-black flex items-center justify-center">
+    <div className="w-full h-full bg-black flex items-center justify-center relative">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+          <div className="w-12 h-12 border-4 border-romantic-500/30 border-t-romantic-500 rounded-full animate-spin" />
+        </div>
+      )}
       <video
         key={src}
         ref={videoRef}
-        src={src}
         muted
         loop
         playsInline
-        autoPlay
-        preload="auto"
+        preload="metadata"
         className="w-full h-full object-cover"
-        onError={(e) => console.error("Video error:", src, e)}
-      />
+        style={{ willChange: "auto" }}
+        onError={handleError}
+        onLoadedData={handleLoadedData}
+        onCanPlay={handleLoadedData}
+      >
+        <source src={src} type="video/quicktime" />
+        <source src={src.replace('.MOV', '.mp4').replace('.mov', '.mp4')} type="video/mp4" />
+        Seu navegador não suporta vídeos.
+      </video>
     </div>
   );
-});
+}, (prevProps, nextProps) => prevProps.src === nextProps.src);
 
-function TimelineEvent({
+const TimelineEvent = memo(function TimelineEvent({
   date,
   title,
   desc,
@@ -554,15 +634,16 @@ function TimelineEvent({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
+      initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className={cn(
         "relative flex items-center justify-between w-full mb-20",
         !isLeft && "md:flex-row-reverse",
       )}
       onClick={locked ? onShake : undefined}
+      style={{ willChange: locked ? "transform" : "auto" }}
     >
       <div
         className={cn(
@@ -629,4 +710,4 @@ function TimelineEvent({
       <div className="hidden md:block w-[45%]" />
     </motion.div>
   );
-}
+});

@@ -76,9 +76,9 @@ export default function OpeningScreen({ onEnter }) {
 
     const resize = () => {
       if (!canvas) return;
-      // Use devicePixelRatio for sharper text but manage performance
-      const dpr =
-        window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5);
+      // Optimize for mobile - use lower DPR for better performance
+      const isMobile = window.innerWidth < 768;
+      const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio, 1.5);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = window.innerWidth + "px";
@@ -86,7 +86,8 @@ export default function OpeningScreen({ onEnter }) {
       ctx.scale(dpr, dpr);
 
       stars.length = 0;
-      const starCount = window.innerWidth < 768 ? 100 : 180;
+      // Reduce star count significantly on mobile
+      const starCount = isMobile ? 60 : 120;
       for (let i = 0; i < starCount; i++) {
         stars.push({
           x: Math.random() * window.innerWidth,
@@ -110,8 +111,10 @@ export default function OpeningScreen({ onEnter }) {
     };
 
     const createFallingElement = () => {
+      const isMobile = window.innerWidth < 768;
       const rand = Math.random();
-      const type = rand < 0.6 ? "phrase" : rand < 0.8 ? "image" : "heart";
+      // More phrases, fewer images on mobile for performance
+      const type = rand < (isMobile ? 0.7 : 0.6) ? "phrase" : rand < 0.85 ? "image" : "heart";
       const minZ = focalLength * 1.5;
       const maxZ = focalLength * 5;
       const z = minZ + Math.random() * (maxZ - minZ);
@@ -119,15 +122,15 @@ export default function OpeningScreen({ onEnter }) {
       const worldH = (window.innerHeight / focalLength) * maxZ;
 
       let content,
-        baseSize = 30;
+        baseSize = isMobile ? 24 : 30;
       if (type === "phrase") {
         content = phrases[Math.floor(Math.random() * phrases.length)];
       } else if (type === "heart") {
         content = heartImgs[Math.floor(Math.random() * heartImgs.length)];
-        baseSize = 40; // Smaller on mobile
+        baseSize = isMobile ? 32 : 40;
       } else {
         content = starImgNode;
-        baseSize = 30;
+        baseSize = isMobile ? 24 : 30;
       }
 
       fallingElements.push({
@@ -258,8 +261,11 @@ export default function OpeningScreen({ onEnter }) {
     // Init
     resize();
     window.addEventListener("resize", resize);
-    for (let i = 0; i < 40; i++) createFallingElement();
-    shootingTimer = setInterval(createShootingStar, 800);
+    // Reduce falling elements on mobile
+    const isMobile = window.innerWidth < 768;
+    const elementCount = isMobile ? 25 : 40;
+    for (let i = 0; i < elementCount; i++) createFallingElement();
+    shootingTimer = setInterval(createShootingStar, isMobile ? 1200 : 800);
     draw();
 
     // Show button after 3s
