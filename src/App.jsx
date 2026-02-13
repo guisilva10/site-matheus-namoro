@@ -35,67 +35,76 @@ export default function App() {
   const shouldReduceMotion = useReducedMotion();
 
   // Optimized animation variants using only GPU-accelerated properties
-  const fadeInUpVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }
-    }
-  }), [shouldReduceMotion]);
+  const fadeInUpVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 30 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" },
+      },
+    }),
+    [shouldReduceMotion],
+  );
 
-  const scaleInVariants = useMemo(() => ({
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" }
-    }
-  }), [shouldReduceMotion]);
+  const scaleInVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, scale: 0.95 },
+      visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" },
+      },
+    }),
+    [shouldReduceMotion],
+  );
 
-  const moments = useMemo(() => [
-    {
-      type: "image",
-      src: "/images/dia-28.jpeg",
-      desc: "The day where it all began",
-    },
-    { type: "image", src: "/images/07.jpeg", desc: "Our first kiss" },
-    {
-      type: "image",
-      src: "/images/08.jpeg",
-      desc: "The day I met your mother and we laughed a lot, because I didn't understand anything",
-    },
-    {
-      type: "image",
-      src: "/images/15.jpeg",
-      desc: "The best turn of the year",
-    },
-    {
-      type: "image",
-      src: "/images/10.jpeg",
-      desc: "The day I felt a different kind of love vibe in the kiss",
-    },
-    {
-      type: "image",
-      src: "/images/20.jpeg",
-      desc: "MODO QUEBRADEIRA ONLINE in the car",
-    },
-    {
-      type: "image",
-      src: "/images/22.jpeg",
-      desc: "Our first sunset of the year",
-    },
-    {
-      type: "image",
-      src: "/images/26.jpeg",
-      desc: "When we took a beer bath and we continued in the best vibe",
-    },
-    {
-      type: "image",
-      src: "/images/27.jpeg",
-      desc: "Last kiss that made me want even more",
-    },
-  ], []);
+  const moments = useMemo(
+    () => [
+      {
+        type: "image",
+        src: "/images/dia-28.jpeg",
+        desc: "The day where it all began",
+      },
+      { type: "image", src: "/images/07.jpeg", desc: "Our first kiss" },
+      {
+        type: "image",
+        src: "/images/08.jpeg",
+        desc: "The day I met your mother and we laughed a lot, because I didn't understand anything",
+      },
+      {
+        type: "image",
+        src: "/images/15.jpeg",
+        desc: "The best turn of the year",
+      },
+      {
+        type: "image",
+        src: "/images/10.jpeg",
+        desc: "The day I felt a different kind of love vibe in the kiss",
+      },
+      {
+        type: "image",
+        src: "/images/20.jpeg",
+        desc: "MODO QUEBRADEIRA ONLINE in the car",
+      },
+      {
+        type: "image",
+        src: "/images/22.jpeg",
+        desc: "Our first sunset of the year",
+      },
+      {
+        type: "image",
+        src: "/images/26.jpeg",
+        desc: "When we took a beer bath and we continued in the best vibe",
+      },
+      {
+        type: "image",
+        src: "/images/27.jpeg",
+        desc: "Last kiss that made me want even more",
+      },
+    ],
+    [],
+  );
 
   // --- COUNTDOWN LOGIC ---
   const [timeLeft, setTimeLeft] = useState({
@@ -543,82 +552,88 @@ export default function App() {
   );
 }
 
-const VideoItem = memo(({ src }) => {
-  const videoRef = useRef(null);
-  const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+const VideoItem = memo(
+  ({ src }) => {
+    const videoRef = useRef(null);
+    const [hasError, setHasError] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!videoRef.current) return;
-        if (entry.isIntersecting) {
-          videoRef.current.play().catch(() => {});
-        } else {
-          videoRef.current.pause();
-        }
-      },
-      { threshold: 0.2, rootMargin: "50px" },
-    );
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!videoRef.current) return;
+          if (entry.isIntersecting) {
+            videoRef.current.play().catch(() => {});
+          } else {
+            videoRef.current.pause();
+          }
+        },
+        { threshold: 0.2, rootMargin: "50px" },
+      );
 
-    if (videoRef.current) observer.observe(videoRef.current);
-    return () => observer.disconnect();
-  }, [src]);
+      if (videoRef.current) observer.observe(videoRef.current);
+      return () => observer.disconnect();
+    }, [src]);
 
-  const handleError = useCallback(() => {
-    console.error("Video failed to load:", src);
-    setHasError(true);
-    setIsLoading(false);
-  }, [src]);
+    const handleError = useCallback(() => {
+      console.error("Video failed to load:", src);
+      setHasError(true);
+      setIsLoading(false);
+    }, [src]);
 
-  const handleLoadedData = useCallback(() => {
-    setIsLoading(false);
-    setHasError(false);
-  }, []);
+    const handleLoadedData = useCallback(() => {
+      setIsLoading(false);
+      setHasError(false);
+    }, []);
 
-  if (hasError) {
-    return (
-      <div className="w-full h-full bg-gradient-to-br from-romantic-900/50 to-black flex flex-col items-center justify-center p-6">
-        <div className="text-romantic-300 text-center space-y-3">
-          <div className="w-16 h-16 mx-auto rounded-full bg-romantic-500/20 flex items-center justify-center">
-            <Play className="w-8 h-8 text-romantic-400" />
+    if (hasError) {
+      return (
+        <div className="w-full h-full bg-gradient-to-br from-romantic-900/50 to-black flex flex-col items-center justify-center p-6">
+          <div className="text-romantic-300 text-center space-y-3">
+            <div className="w-16 h-16 mx-auto rounded-full bg-romantic-500/20 flex items-center justify-center">
+              <Play className="w-8 h-8 text-romantic-400" />
+            </div>
+            <p className="text-sm opacity-70">Vídeo indisponível</p>
+            <p className="text-xs opacity-50 max-w-xs">
+              Este momento está guardado em nossos corações ❤️
+            </p>
           </div>
-          <p className="text-sm opacity-70">Vídeo indisponível</p>
-          <p className="text-xs opacity-50 max-w-xs">
-            Este momento está guardado em nossos corações ❤️
-          </p>
         </div>
+      );
+    }
+
+    return (
+      <div className="w-full h-full bg-black flex items-center justify-center relative">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+            <div className="w-12 h-12 border-4 border-romantic-500/30 border-t-romantic-500 rounded-full animate-spin" />
+          </div>
+        )}
+        <video
+          key={src}
+          ref={videoRef}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="w-full h-full object-cover"
+          style={{ willChange: "auto" }}
+          onError={handleError}
+          onLoadedData={handleLoadedData}
+          onCanPlay={handleLoadedData}
+        >
+          <source src={src} type="video/quicktime" />
+          <source
+            src={src.replace(".MOV", ".mp4").replace(".mov", ".mp4")}
+            type="video/mp4"
+          />
+          Seu navegador não suporta vídeos.
+        </video>
       </div>
     );
-  }
-
-  return (
-    <div className="w-full h-full bg-black flex items-center justify-center relative">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-          <div className="w-12 h-12 border-4 border-romantic-500/30 border-t-romantic-500 rounded-full animate-spin" />
-        </div>
-      )}
-      <video
-        key={src}
-        ref={videoRef}
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        className="w-full h-full object-cover"
-        style={{ willChange: "auto" }}
-        onError={handleError}
-        onLoadedData={handleLoadedData}
-        onCanPlay={handleLoadedData}
-      >
-        <source src={src} type="video/quicktime" />
-        <source src={src.replace('.MOV', '.mp4').replace('.mov', '.mp4')} type="video/mp4" />
-        Seu navegador não suporta vídeos.
-      </video>
-    </div>
-  );
-}, (prevProps, nextProps) => prevProps.src === nextProps.src);
+  },
+  (prevProps, nextProps) => prevProps.src === nextProps.src,
+);
 
 const TimelineEvent = memo(function TimelineEvent({
   date,
