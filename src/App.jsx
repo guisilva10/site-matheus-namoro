@@ -28,8 +28,8 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentMoment, setCurrentMoment] = useState({
     type: "image",
-    src: "/images/06.jpeg",
-    desc: "Notre vibe",
+    src: "/images/dia-28.jpeg",
+    desc: "The day where it all began",
   });
 
   const audioRef = useRef(null);
@@ -138,29 +138,34 @@ export default function App() {
     window.scrollTo(0, 0);
     document.body.style.overflowY = "auto";
 
+    // Wait for the main reveal transition to finish before calculating scroll points
     setTimeout(() => {
       initScrollAnimations();
       initHeartBackground();
-    }, 500);
+      ScrollTrigger.refresh();
+    }, 1100);
   };
 
   const initScrollAnimations = () => {
+    // Refresh ScrollTrigger when everything is loaded
+    window.addEventListener("load", () => ScrollTrigger.refresh());
+
     const sections = document.querySelectorAll(".reveal-section");
     sections.forEach((section) => {
       gsap.fromTo(
         section,
-        { opacity: 0, y: 50, scale: 0.95, autoAlpha: 0 },
+        { opacity: 0, y: 30, scale: 0.98 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          autoAlpha: 1,
-          duration: 1.2,
-          ease: "power3.out",
+          duration: 1,
+          ease: "power2.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 85%",
+            start: "top 88%",
             toggleActions: "play none none none",
+            onEnter: () => ScrollTrigger.refresh(), // Refresh when a section enters
           },
         },
       );
@@ -484,22 +489,18 @@ export default function App() {
 
 const VideoItem = memo(({ src }) => {
   const videoRef = useRef(null);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
+        if (!videoRef.current) return;
         if (entry.isIntersecting) {
-          setIsLoaded(true);
-          // Small delay to ensure smooth UI before heavy decoding
-          setTimeout(() => {
-            videoRef.current?.play().catch(() => {});
-          }, 100);
+          videoRef.current.play().catch(() => {});
         } else {
-          videoRef.current?.pause();
+          videoRef.current.pause();
         }
       },
-      { threshold: 0.1, rootMargin: "100px" }, // Load slightly before entering
+      { threshold: 0.1 },
     );
 
     if (videoRef.current) observer.observe(videoRef.current);
@@ -507,26 +508,17 @@ const VideoItem = memo(({ src }) => {
   }, []);
 
   return (
-    <div className="w-full h-full bg-romantic-900/20 relative">
+    <div className="w-full h-full bg-romantic-900/20">
       <video
         ref={videoRef}
-        src={isLoaded ? src : undefined}
+        src={src}
         muted
         loop
         playsInline
-        preload="none"
-        className="w-full h-full object-cover transition-opacity duration-500"
-        style={{ opacity: isLoaded ? 1 : 0 }}
+        preload="metadata"
+        onLoadedMetadata={() => ScrollTrigger.refresh()}
+        className="w-full h-full object-cover"
       />
-      {/* Loading Placeholder */}
-      <div
-        className={cn(
-          "absolute inset-0 flex items-center justify-center transition-opacity duration-500",
-          isLoaded ? "opacity-0 pointer-events-none" : "opacity-100",
-        )}
-      >
-        <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-      </div>
     </div>
   );
 });
