@@ -322,7 +322,10 @@ export default function App() {
                 <div className="flex justify-center">
                   <div className="w-full bg-white/5 p-6 rounded-2xl flex items-center justify-between border border-white/10 hover:border-romantic-500/30 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-romantic-500 rounded-full flex items-center justify-center animate-spin-slow" style={{ willChange: "transform" }}>
+                      <div
+                        className="w-12 h-12 bg-romantic-500 rounded-full flex items-center justify-center animate-spin-slow"
+                        style={{ willChange: "transform" }}
+                      >
                         <Disc className="text-white w-6 h-6" />
                       </div>
                       <div className="text-left">
@@ -349,52 +352,46 @@ export default function App() {
 
             {/* Section: Quote */}
             <section id="quote" className="py-20 px-6 max-w-3xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px", amount: 0.3 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative"
-              >
+              <div className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative">
                 <Quote className="text-romantic-400 w-12 h-12 mx-auto mb-8 opacity-50" />
                 <p className="text-xl md:text-2xl leading-relaxed text-romantic-50 italic indie-flower">
                   "I made this website because I needed a place to put
-                  everything we’ve lived. Our moments, our laughs, where it all
-                  started… our story, our way. I’ve never really been the
-                  romantic type, you know that. I’ve never done something like
+                  everything we've lived. Our moments, our laughs, where it all
+                  started… our story, our way. I've never really been the
+                  romantic type, you know that. I've never done something like
                   this for anyone. But you brought that side out of me in a way
-                  I didn’t even know existed. And for that to happen, it can
+                  I didn't even know existed. And for that to happen, it can
                   only mean one thing — we really match. Our vibe is infinite.
                   Too good. Every detail here was made with love. Thinking about
                   our energy, the way everything happened so naturally but so
-                  intensely at the same time. I’m truly grateful for every
-                  moment, every exchange, every connection we’ve built. And I
-                  know you’re smiling while reading this… because I wrote it
+                  intensely at the same time. I'm truly grateful for every
+                  moment, every exchange, every connection we've built. And I
+                  know you're smiling while reading this… because I wrote it
                   smiling too. And this is just the beginning… because I still
                   want to fill this site with new stories, more of our moments.
                   I want it to feel like a frame hanging in the living room of
-                  our story — something we look at and say, “damn, look at
-                  everything we’ve already lived”… and laugh about the
+                  our story — something we look at and say, "damn, look at
+                  everything we've already lived"… and laugh about the
                   behind-the-scenes stuff. Haha. Even from far away, I want you
-                  to enjoy this Valentine’s Day with a smile on your face. Live
-                  it like I’m right there with you — because in some way, I
+                  to enjoy this Valentine's Day with a smile on your face. Live
+                  it like I'm right there with you — because in some way, I
                   always am. And you know that. I would travel the world just to
                   live this vibe by your side. Feel the energy of every country,
                   every city, in our own crazy way. Creating memories,
                   collecting stories, living everything intensely. Because when
-                  I’m with you, anywhere becomes our own adventure. I know
-                  sometimes I’m a little crazy, hyped, sending too many
-                  messages… but with you it’s different. I actually want to. The
-                  energy is too good to stay quiet. I’m out here feeling like
-                  the last romantic alive, but it’s cool… you did that to me. I
+                  I'm with you, anywhere becomes our own adventure. I know
+                  sometimes I'm a little crazy, hyped, sending too many
+                  messages… but with you it's different. I actually want to. The
+                  energy is too good to stay quiet. I'm out here feeling like
+                  the last romantic alive, but it's cool… you did that to me. I
                   did all of this from the heart. I hope you feel it in every
-                  detail. Because what we have isn’t normal. It’s rare energy.
-                  It’s real connection. And this… is just the beginning of our
+                  detail. Because what we have isn't normal. It's rare energy.
+                  It's real connection. And this… is just the beginning of our
                   story. ❤️♾️ And of course… our dangerous little way of
-                  committing “crimes” out there. But those… we solve in person.
+                  committing "crimes" out there. But those… we solve in person.
                   Sometimes 👀👀"
                 </p>
-              </motion.div>
+              </div>
             </section>
 
             {/* Section: Moments */}
@@ -458,7 +455,7 @@ export default function App() {
                           "w-2 h-2 rounded-full transition-all",
                           currentMoment.src === m.src
                             ? "bg-romantic-500 w-8"
-                            : "bg-white/50 hover:bg-white/70"
+                            : "bg-white/50 hover:bg-white/70",
                         )}
                         aria-label={`Ver foto ${i + 1}`}
                       />
@@ -807,7 +804,7 @@ const TimelineEvent = memo(function TimelineEvent({
                       "rounded-full transition-all",
                       activeIndex === i
                         ? "w-8 h-2 bg-romantic-500"
-                        : "w-2 h-2 bg-white/50 hover:bg-white/70"
+                        : "w-2 h-2 bg-white/50 hover:bg-white/70",
                     )}
                     aria-label={`Ver item ${i + 1}`}
                   />
