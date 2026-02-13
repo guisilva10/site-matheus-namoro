@@ -568,6 +568,14 @@ export default function App() {
                     desc="Un nouveau chapitre arrive..."
                     onShake={shakeElement}
                   />
+                  <TimelineEvent
+                    locked
+                    side="right"
+                    date="31 Décembre 2026"
+                    title="À venir"
+                    desc="Notre premier anniversaire ensemble..."
+                    onShake={shakeElement}
+                  />
                 </div>
               </div>
 

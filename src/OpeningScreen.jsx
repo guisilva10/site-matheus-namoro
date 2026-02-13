@@ -113,8 +113,8 @@ export default function OpeningScreen({ onEnter }) {
     const createFallingElement = () => {
       const isMobile = window.innerWidth < 768;
       const rand = Math.random();
-      // Mais imagens: 50% frases, 30% fotos, 20% estrelas
-      const type = rand < 0.5 ? "phrase" : rand < 0.8 ? "heart" : "image";
+      // Mais destaque para imagens: 45% frases, 35% fotos, 20% estrelas
+      const type = rand < 0.45 ? "phrase" : rand < 0.8 ? "heart" : "image";
       const minZ = focalLength * 1.5;
       const maxZ = focalLength * 5;
       const z = minZ + Math.random() * (maxZ - minZ);
@@ -128,11 +128,11 @@ export default function OpeningScreen({ onEnter }) {
         baseSize = isMobile ? 25 : 30;
       } else if (type === "heart") {
         content = heartImgs[Math.floor(Math.random() * heartImgs.length)];
-        // Imagens maiores
-        baseSize = isMobile ? 50 : 70;
+        // Imagens ainda maiores e com mais destaque
+        baseSize = isMobile ? 60 : 90;
       } else {
         content = starImgNode;
-        baseSize = isMobile ? 35 : 50;
+        baseSize = isMobile ? 45 : 65;
       }
 
       fallingElements.push({
@@ -229,11 +229,11 @@ export default function OpeningScreen({ onEnter }) {
           }
         }
 
-        // Imagens mais visíveis
+        // Imagens com muito mais destaque
         const opacity =
           el.type === "phrase"
-            ? Math.max(0, Math.min(1, scale * 1.2))
-            : Math.max(0, Math.min(1, scale * 1.5));
+            ? Math.max(0, Math.min(1, scale * 1.1))
+            : Math.max(0, Math.min(1, scale * 1.8));
 
         ctx.globalAlpha = opacity;
 
@@ -250,7 +250,12 @@ export default function OpeningScreen({ onEnter }) {
           el.content.naturalWidth > 0
         ) {
           try {
-            ctx.shadowBlur = 0;
+            // Adicionar sombra para destaque
+            ctx.shadowColor = "rgba(244, 63, 94, 0.4)";
+            ctx.shadowBlur = size * 0.2;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
             // Adicionar bordas arredondadas nas imagens
             ctx.save();
             ctx.beginPath();
@@ -260,6 +265,10 @@ export default function OpeningScreen({ onEnter }) {
             ctx.clip();
             ctx.drawImage(el.content, x - size / 2, y - size / 2, size, size);
             ctx.restore();
+
+            // Resetar sombra
+            ctx.shadowColor = "transparent";
+            ctx.shadowBlur = 0;
           } catch (e) {}
         }
       }
