@@ -260,10 +260,10 @@ export default function App() {
               className="min-h-screen flex flex-col items-center justify-center p-6 text-center space-y-8"
             >
               <motion.div
-                variants={scaleInVariants}
-                initial="hidden"
-                whileInView="visible"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
                 className="space-y-4 animate-float"
               >
                 <Heart className="w-16 h-16 text-romantic-500 mx-auto fill-current" />
@@ -350,13 +350,12 @@ export default function App() {
             {/* Section: Quote */}
             <section id="quote" className="py-20 px-6 max-w-3xl mx-auto">
               <motion.div
-                variants={scaleInVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative overflow-hidden group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative"
               >
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-romantic-500/10 blur-3xl group-hover:bg-romantic-500/20 transition-all" />
                 <Quote className="text-romantic-400 w-12 h-12 mx-auto mb-8 opacity-50" />
                 <p className="text-xl md:text-2xl leading-relaxed text-romantic-50 italic indie-flower">
                   "I made this website because I needed a place to put
@@ -414,10 +413,10 @@ export default function App() {
                 <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-romantic-500 to-transparent" />
               </motion.h2>
               <motion.p
-                variants={scaleInVariants}
-                initial="hidden"
-                whileInView="visible"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="text-romantic-300 mb-12 text-lg"
               >
                 <span>{timeLeft.d}</span> jours de pur bonheur ✨
@@ -425,12 +424,11 @@ export default function App() {
 
               <div className="space-y-8">
                 <motion.div
-                  variants={scaleInVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px", amount: 0.2 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   className="glass rounded-[2.5rem] overflow-hidden aspect-[3/4] md:aspect-video relative group border-2 border-white/10 shadow-2xl mx-auto max-w-sm md:max-w-4xl"
-                  style={{ willChange: "opacity, transform" }}
                 >
                   <AnimatePresence mode="wait">
                     <motion.img
