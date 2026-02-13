@@ -28,7 +28,7 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentMoment, setCurrentMoment] = useState({
     type: "image",
-    src: "/images/dia-28.jpeg",
+    src: "images/dia-28.jpeg",
     desc: "The day where it all began",
   });
 
@@ -39,44 +39,43 @@ export default function App() {
   const moments = [
     {
       type: "image",
-      src: "/images/dia-28.jpeg",
+      src: "images/dia-28.jpeg",
       desc: "The day where it all began",
     },
-    { type: "image", src: "/images/07.jpeg", desc: "Our first kiss" },
+    { type: "image", src: "images/07.jpeg", desc: "Our first kiss" },
     {
       type: "image",
-      src: "/images/08.jpeg",
-      desc: "The day I met yout mother and whe laughed a lot, because I didn't understand anything",
+      src: "images/08.jpeg",
+      desc: "The day I met your mother and we laughed a lot, because I didn't understand anything",
     },
     {
       type: "image",
-      src: "/images/15.jpeg",
+      src: "images/15.jpeg",
       desc: "The best turn of the year",
     },
     {
       type: "image",
-      src: "/images/10.jpeg",
+      src: "images/10.jpeg",
       desc: "The day I felt a different kind of love vibe in the kiss",
     },
-
     {
       type: "image",
-      src: "/images/20.jpeg",
-      desc: "MODO QUEBRADEIRA ONLIEN in the car",
+      src: "images/20.jpeg",
+      desc: "MODO QUEBRADEIRA ONLINE in the car",
     },
     {
       type: "image",
-      src: "/images/22.jpeg",
+      src: "images/22.jpeg",
       desc: "Our first sunset of the year",
     },
     {
       type: "image",
-      src: "/images/26.jpeg",
+      src: "images/26.jpeg",
       desc: "When we took a beer bath and we continued in the best vibe",
     },
     {
       type: "image",
-      src: "/images/27.jpeg",
+      src: "images/27.jpeg",
       desc: "Last kiss that made me want even more",
     },
   ];
@@ -302,7 +301,7 @@ export default function App() {
 
         {/* Section: Quote */}
         <section id="quote" className="py-20 px-6 max-w-3xl mx-auto">
-          <div className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative overflow-hidden group reveal-section">
+          <div className="glass p-12 rounded-[3rem] text-center border-t border-l border-white/20 relative overflow-hidden group">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-romantic-500/10 blur-3xl group-hover:bg-romantic-500/20 transition-all" />
             <Quote className="text-romantic-400 w-12 h-12 mx-auto mb-8 opacity-50" />
             <p className="text-xl md:text-2xl leading-relaxed text-romantic-50 italic indie-flower">
@@ -424,7 +423,7 @@ export default function App() {
                 date="28 décembre 2025"
                 title="Le début de tout"
                 desc="The day where it all began"
-                media={[{ type: "image", src: "/dia-28.jpeg" }]}
+                media={[{ type: "image", src: "images/dia-28.jpeg" }]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
@@ -432,14 +431,14 @@ export default function App() {
                 date="30 décembre 2025"
                 title="Nos moments"
                 desc="Our First kiss"
-                media={[{ type: "video", src: "/videos/dia-30.MOV" }]}
+                media={[{ type: "video", src: "videos/dia-30.MOV" }]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
                 date="31 décembre 2025"
                 title="Nouvel An"
                 desc="The best turn of the year"
-                media={[{ type: "video", src: "/videos/dia-31.mov" }]}
+                media={[{ type: "video", src: "videos/dia-31.mov" }]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
@@ -447,7 +446,7 @@ export default function App() {
                 date="01 Janvier 2026"
                 title="Premier Jour"
                 desc="Our first sunset of the year"
-                media={[{ type: "video", src: "/videos/dia-01/01.mov" }]}
+                media={[{ type: "video", src: "videos/dia-01/01.mov" }]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
@@ -455,14 +454,29 @@ export default function App() {
                 title="Aventures d'été"
                 desc="When I almost crashed the car, with us kissing"
                 media={[
-                  { type: "video", src: "/videos/dia-02/01.MOV" },
-                  { type: "video", src: "/videos/dia-02/02.MOV" },
-                  { type: "video", src: "/videos/dia-02/03.MOV" },
-                  { type: "video", src: "/videos/dia-02/04.mov" },
-                  { type: "video", src: "/videos/dia-02/05.MOV" },
-                  { type: "video", src: "/videos/dia-02/06.MOV" },
+                  { type: "video", src: "videos/dia-02/01.MOV" },
+                  { type: "video", src: "videos/dia-02/02.MOV" },
+                  { type: "video", src: "videos/dia-02/03.MOV" },
+                  { type: "video", src: "videos/dia-02/04.mov" },
+                  { type: "video", src: "videos/dia-02/05.MOV" },
+                  { type: "video", src: "videos/dia-02/06.MOV" },
                 ]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
+              />
+              <TimelineEvent
+                locked
+                side="right"
+                date="Mars 2026"
+                title="À venir"
+                desc="Bientôt..."
+                onShake={shakeElement}
+              />
+              <TimelineEvent
+                locked
+                date="Juillet 2026"
+                title="À venir"
+                desc="Un nouveau chapitre arrive..."
+                onShake={shakeElement}
               />
             </div>
           </div>
@@ -504,17 +518,18 @@ const VideoItem = memo(({ src }) => {
 
     if (videoRef.current) observer.observe(videoRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [src]);
 
   return (
     <div className="w-full h-full bg-romantic-900/20">
       <video
+        key={src}
         ref={videoRef}
         src={src}
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         onLoadedMetadata={() => ScrollTrigger.refresh()}
         className="w-full h-full object-cover"
       />

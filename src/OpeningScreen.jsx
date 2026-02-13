@@ -32,10 +32,10 @@ export default function OpeningScreen({ onEnter }) {
 
     // Preload Images
     const heartImgs = [
-      "/images/25.jpeg",
-      "/images/08.jpeg",
-      "/images/15.jpeg",
-      "/images/22.jpeg",
+      "images/25.jpeg",
+      "images/08.jpeg",
+      "images/15.jpeg",
+      "images/22.jpeg",
     ].map((src) => {
       const img = new Image();
       img.src = src;
