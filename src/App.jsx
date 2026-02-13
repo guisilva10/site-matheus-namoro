@@ -104,6 +104,11 @@ export default function App() {
         src: "/images/27.jpeg",
         desc: "Last kiss that made me want even more",
       },
+      {
+        type: "image",
+        src: "/images/28.jpeg",
+        desc: "When I almost crashed the car, with us kissing",
+      },
     ],
     [],
   );
