@@ -87,7 +87,7 @@ export default function OpeningScreen({ onEnter }) {
 
       stars.length = 0;
       // Reduce star count significantly on mobile
-      const starCount = isMobile ? 60 : 120;
+      const starCount = isMobile ? 40 : 100;
       for (let i = 0; i < starCount; i++) {
         stars.push({
           x: Math.random() * window.innerWidth,
@@ -114,7 +114,7 @@ export default function OpeningScreen({ onEnter }) {
       const isMobile = window.innerWidth < 768;
       const rand = Math.random();
       // More phrases, fewer images on mobile for performance
-      const type = rand < (isMobile ? 0.7 : 0.6) ? "phrase" : rand < 0.85 ? "image" : "heart";
+      const type = rand < (isMobile ? 0.85 : 0.6) ? "phrase" : rand < 0.9 ? "image" : "heart";
       const minZ = focalLength * 1.5;
       const maxZ = focalLength * 5;
       const z = minZ + Math.random() * (maxZ - minZ);
@@ -122,15 +122,15 @@ export default function OpeningScreen({ onEnter }) {
       const worldH = (window.innerHeight / focalLength) * maxZ;
 
       let content,
-        baseSize = isMobile ? 24 : 30;
+        baseSize = isMobile ? 20 : 30;
       if (type === "phrase") {
         content = phrases[Math.floor(Math.random() * phrases.length)];
       } else if (type === "heart") {
         content = heartImgs[Math.floor(Math.random() * heartImgs.length)];
-        baseSize = isMobile ? 32 : 40;
+        baseSize = isMobile ? 28 : 40;
       } else {
         content = starImgNode;
-        baseSize = isMobile ? 24 : 30;
+        baseSize = isMobile ? 20 : 30;
       }
 
       fallingElements.push({
@@ -140,7 +140,7 @@ export default function OpeningScreen({ onEnter }) {
         baseSize,
         x: (Math.random() - 0.5) * worldW * 1.2,
         y: (Math.random() - 0.5) * worldH * 1.2,
-        speedZ: Math.random() * 2 + 1,
+        speedZ: Math.random() * (isMobile ? 1.5 : 2) + 1,
       });
     };
 
@@ -263,9 +263,9 @@ export default function OpeningScreen({ onEnter }) {
     window.addEventListener("resize", resize);
     // Reduce falling elements on mobile
     const isMobile = window.innerWidth < 768;
-    const elementCount = isMobile ? 25 : 40;
+    const elementCount = isMobile ? 15 : 35;
     for (let i = 0; i < elementCount; i++) createFallingElement();
-    shootingTimer = setInterval(createShootingStar, isMobile ? 1200 : 800);
+    shootingTimer = setInterval(createShootingStar, isMobile ? 1500 : 900);
     draw();
 
     // Show button after 3s

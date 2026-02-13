@@ -13,6 +13,20 @@
     /* Optimize rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Improve scroll performance */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Force GPU acceleration and optimize rendering */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  video {
+    /* Optimize video rendering */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   /* Custom Scrollbar */

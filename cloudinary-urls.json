@@ -1,0 +1,50 @@
+[
+  {
+    "originalPath": "dia-01/01.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961675/site-matheus/videos/site-matheus/videos/dia-01/01.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-01/01",
+    "size": 90.25340366363525
+  },
+  {
+    "originalPath": "dia-02/01.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961686/site-matheus/videos/site-matheus/videos/dia-02/01.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-02/01",
+    "size": 28.950538635253906
+  },
+  {
+    "originalPath": "dia-02/02.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961695/site-matheus/videos/site-matheus/videos/dia-02/02.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-02/02",
+    "size": 26.034754753112793
+  },
+  {
+    "originalPath": "dia-02/03.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961700/site-matheus/videos/site-matheus/videos/dia-02/03.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-02/03",
+    "size": 5.57524299621582
+  },
+  {
+    "originalPath": "dia-02/05.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961722/site-matheus/videos/site-matheus/videos/dia-02/05.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-02/05",
+    "size": 98.55995655059814
+  },
+  {
+    "originalPath": "dia-02/06.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961734/site-matheus/videos/site-matheus/videos/dia-02/06.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-02/06",
+    "size": 28.950538635253906
+  },
+  {
+    "originalPath": "dia-30.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961755/site-matheus/videos/site-matheus/videos/dia-30.mp4",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-30",
+    "size": 83.68103885650635
+  },
+  {
+    "originalPath": "dia-31.mp4",
+    "cloudinaryUrl": "https://res.cloudinary.com/doasv5ahc/video/upload/v1770961796/site-matheus/videos/site-matheus/videos/dia-31.mov",
+    "publicId": "site-matheus/videos/site-matheus/videos/dia-31",
+    "size": 11.988529205322266
+  }
+]

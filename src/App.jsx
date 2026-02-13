@@ -14,6 +14,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import OpeningScreen from "./OpeningScreen";
+import { createVideoMedia } from "./videoUrls";
 
 // Helper for tailwind classes
 function cn(...inputs) {
@@ -142,6 +143,11 @@ export default function App() {
   const initHeartBackground = useCallback(() => {
     const container = heartParticlesRef.current;
     if (!container) return;
+
+    // Reduce particles on mobile
+    const isMobile = window.innerWidth < 768;
+    if (shouldReduceMotion) return; // Skip animations if user prefers reduced motion
+
     const symbols = ["❤️", "💖", "💗", "💓", "💕", "∞", "∞"];
 
     const createParticle = () => {
@@ -155,16 +161,19 @@ export default function App() {
       const dur = Math.random() * 7 + 6;
       p.style.animationDuration = dur + "s";
       p.style.opacity = (Math.random() * 0.4 + 0.2).toString();
-      p.style.willChange = "transform, opacity";
+      p.style.willChange = "transform";
       container.appendChild(p);
       setTimeout(() => p.remove(), dur * 1000);
     };
 
-    // Reduced frequency for better performance
-    setInterval(createParticle, 800);
-    for (let i = 0; i < 15; i++)
+    // Reduced frequency and count for better performance, especially on mobile
+    const interval = isMobile ? 1500 : 800;
+    const initialCount = isMobile ? 8 : 15;
+
+    setInterval(createParticle, interval);
+    for (let i = 0; i < initialCount; i++)
       setTimeout(createParticle, Math.random() * 5000);
-  }, []);
+  }, [shouldReduceMotion]);
 
   const handleEnter = useCallback(() => {
     if (audioRef.current) {
@@ -476,14 +485,14 @@ export default function App() {
                     date="30 décembre 2025"
                     title="Nos moments"
                     desc="Our First kiss"
-                    media={[{ type: "video", src: "/videos/dia-30.mp4" }]}
+                    media={[createVideoMedia("/videos/dia-30.mp4")]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
                   <TimelineEvent
                     date="31 décembre 2025"
                     title="Nouvel An"
                     desc="The best turn of the year"
-                    media={[{ type: "video", src: "/videos/dia-31.mp4" }]}
+                    media={[createVideoMedia("/videos/dia-31.mp4")]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
                   <TimelineEvent
@@ -491,7 +500,7 @@ export default function App() {
                     date="01 Janvier 2026"
                     title="Premier Jour"
                     desc="Our first sunset of the year"
-                    media={[{ type: "video", src: "/videos/dia-01/01.mp4" }]}
+                    media={[createVideoMedia("/videos/dia-01/01.mp4")]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
                   <TimelineEvent
@@ -499,11 +508,11 @@ export default function App() {
                     title="Aventures d'été"
                     desc="When I almost crashed the car, with us kissing"
                     media={[
-                      { type: "video", src: "/videos/dia-02/01.mp4" },
-                      { type: "video", src: "/videos/dia-02/02.mp4" },
-                      { type: "video", src: "/videos/dia-02/03.mp4" },
-                      { type: "video", src: "/videos/dia-02/05.mp4" },
-                      { type: "video", src: "/videos/dia-02/06.mp4" },
+                      createVideoMedia("/videos/dia-02/01.mp4"),
+                      createVideoMedia("/videos/dia-02/02.mp4"),
+                      createVideoMedia("/videos/dia-02/03.mp4"),
+                      createVideoMedia("/videos/dia-02/05.mp4"),
+                      createVideoMedia("/videos/dia-02/06.mp4"),
                     ]}
                     icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
                   />
@@ -553,27 +562,31 @@ export default function App() {
 }
 
 const VideoItem = memo(
-  ({ src }) => {
+  ({ src, poster }) => {
     const videoRef = useRef(null);
     const [hasError, setHasError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (!videoRef.current) return;
           if (entry.isIntersecting) {
-            videoRef.current.play().catch(() => {});
+            // Play video when visible
+            video.play().catch(() => {});
           } else {
-            videoRef.current.pause();
+            // Pause when not visible
+            video.pause();
           }
         },
-        { threshold: 0.2, rootMargin: "50px" },
+        { threshold: 0.3, rootMargin: "50px" }
       );
 
-      if (videoRef.current) observer.observe(videoRef.current);
+      observer.observe(video);
       return () => observer.disconnect();
-    }, [src]);
+    }, []);
 
     const handleError = useCallback(() => {
       console.error("Video failed to load:", src);
@@ -615,18 +628,14 @@ const VideoItem = memo(
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
+          poster={poster}
           className="w-full h-full object-cover"
-          style={{ willChange: "auto" }}
           onError={handleError}
           onLoadedData={handleLoadedData}
           onCanPlay={handleLoadedData}
+          src={src}
         >
-          <source src={src} type="video/quicktime" />
-          <source
-            src={src.replace(".MOV", ".mp4").replace(".mov", ".mp4")}
-            type="video/mp4"
-          />
           Seu navegador não suporta vídeos.
         </video>
       </div>
@@ -696,7 +705,7 @@ const TimelineEvent = memo(function TimelineEvent({
                   className="w-full h-full flex-shrink-0 snap-center flex items-center justify-center bg-black"
                 >
                   {item.type === "video" ? (
-                    <VideoItem src={item.src} />
+                    <VideoItem src={item.src} poster={item.poster} />
                   ) : (
                     <img
                       src={item.src}
