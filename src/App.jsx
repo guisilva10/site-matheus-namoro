@@ -251,7 +251,8 @@ export default function App() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             id="main-app"
             ref={mainAppRef}
-            className="main-content active relative z-10"
+            className="main-content active relative"
+            style={{ zIndex: 1 }}
           >
             {/* Section: Hero */}
             <section
@@ -309,9 +310,8 @@ export default function App() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
-                className="glass p-8 md:p-12 rounded-[3rem] relative overflow-hidden group"
+                className="glass p-8 md:p-12 rounded-[3rem] relative"
               >
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-romantic-500/10 blur-3xl group-hover:bg-romantic-500/20 transition-all"></div>
                 <Music className="text-romantic-400 w-12 h-12 mx-auto mb-8 opacity-50" />
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
                   Notre Chanson
@@ -320,9 +320,9 @@ export default function App() {
                   Future - WAIT FOR U (ft. Drake & Tems)
                 </p>
                 <div className="flex justify-center">
-                  <div className="w-full bg-white/5 p-6 rounded-2xl flex items-center justify-between border border-white/10 group-hover:border-romantic-500/30 transition-all">
+                  <div className="w-full bg-white/5 p-6 rounded-2xl flex items-center justify-between border border-white/10 hover:border-romantic-500/30 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-romantic-500 rounded-full flex items-center justify-center animate-spin-slow">
+                      <div className="w-12 h-12 bg-romantic-500 rounded-full flex items-center justify-center animate-spin-slow" style={{ willChange: "transform" }}>
                         <Disc className="text-white w-6 h-6" />
                       </div>
                       <div className="text-left">
