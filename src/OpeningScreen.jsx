@@ -146,7 +146,7 @@ export default function OpeningScreen({ onEnter }) {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       // Background
-      ctx.fillStyle = "#0c0004";
+      ctx.fillStyle = "#1f050a";
       ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
       // Stars

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, memo } from "react";
 import {
   Infinity as InfinityIcon,
   Heart,
@@ -27,8 +27,9 @@ export default function App() {
   const [hasEntered, setHasEntered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentMoment, setCurrentMoment] = useState({
-    src: "2.png",
-    desc: "Cuisiner dans notre maison",
+    type: "image",
+    src: "/images/06.jpeg",
+    desc: "Notre vibe",
   });
 
   const audioRef = useRef(null);
@@ -36,30 +37,48 @@ export default function App() {
   const mainAppRef = useRef(null);
 
   const moments = [
-    { type: "image", src: "/images/06.jpeg" },
-    { type: "video", src: "/videos/02.MOV" },
-    { type: "image", src: "/images/07.jpeg" },
-    { type: "video", src: "/videos/03.MOV" },
-    { type: "image", src: "/images/08.jpeg" },
-    { type: "video", src: "/videos/04.MOV" },
-    { type: "image", src: "/images/09.jpeg" },
-    { type: "video", src: "/videos/05.MOV" },
-    { type: "image", src: "/images/10.jpeg" },
-    { type: "video", src: "/videos/11.MOV" },
-    { type: "image", src: "/images/15.jpeg" },
-    { type: "video", src: "/videos/12.MOV" },
-    { type: "image", src: "/images/16.JPEG" },
-    { type: "video", src: "/videos/13.MOV" },
-    { type: "image", src: "/images/17.PNG" },
-    { type: "video", src: "/videos/14.MOV" },
-    { type: "image", src: "/images/18.jpeg" },
-    { type: "video", src: "/videos/16.mov" },
-    { type: "image", src: "/images/19.jpeg" },
-    { type: "image", src: "/images/20.jpeg" },
-    { type: "image", src: "/images/22.jpeg" },
-    { type: "image", src: "/images/23.jpeg" },
-    { type: "image", src: "/images/24.jpeg" },
-    { type: "image", src: "/images/25.jpeg" },
+    {
+      type: "image",
+      src: "/images/dia-28.jpeg",
+      desc: "The day where it all began",
+    },
+    { type: "image", src: "/images/07.jpeg", desc: "Our first kiss" },
+    {
+      type: "image",
+      src: "/images/08.jpeg",
+      desc: "The day I met yout mother and whe laughed a lot, because I didn't understand anything",
+    },
+    {
+      type: "image",
+      src: "/images/15.jpeg",
+      desc: "The best turn of the year",
+    },
+    {
+      type: "image",
+      src: "/images/10.jpeg",
+      desc: "The day I felt a different kind of love vibe in the kiss",
+    },
+
+    {
+      type: "image",
+      src: "/images/20.jpeg",
+      desc: "MODO QUEBRADEIRA ONLIEN in the car",
+    },
+    {
+      type: "image",
+      src: "/images/22.jpeg",
+      desc: "Our first sunset of the year",
+    },
+    {
+      type: "image",
+      src: "/images/26.jpeg",
+      desc: "When we took a beer bath and we continued in the best vibe",
+    },
+    {
+      type: "image",
+      src: "/images/27.jpeg",
+      desc: "Last kiss that made me want even more",
+    },
   ];
 
   // --- HELPERS ---
@@ -209,7 +228,7 @@ export default function App() {
           <div className="space-y-4 animate-float">
             <Heart className="w-16 h-16 text-romantic-500 mx-auto fill-current" />
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-              Para minha Princesa
+              Pour ma princesse
             </h1>
             <p className="text-xl md:text-2xl text-romantic-200 dancing-script">
               Depuis le début de notre amour
@@ -283,8 +302,38 @@ export default function App() {
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-romantic-500/10 blur-3xl group-hover:bg-romantic-500/20 transition-all" />
             <Quote className="text-romantic-400 w-12 h-12 mx-auto mb-8 opacity-50" />
             <p className="text-xl md:text-2xl leading-relaxed text-romantic-50 italic indie-flower">
-              "Je t'aime d'une manière que les mots ne peuvent exprimer, mais
-              j'essaie quand même..."
+              "I made this website because I needed a place to put everything
+              we’ve lived. Our moments, our laughs, where it all started… our
+              story, our way. I’ve never really been the romantic type, you know
+              that. I’ve never done something like this for anyone. But you
+              brought that side out of me in a way I didn’t even know existed.
+              And for that to happen, it can only mean one thing — we really
+              match. Our vibe is infinite. Too good. Every detail here was made
+              with love. Thinking about our energy, the way everything happened
+              so naturally but so intensely at the same time. I’m truly grateful
+              for every moment, every exchange, every connection we’ve built.
+              And I know you’re smiling while reading this… because I wrote it
+              smiling too. And this is just the beginning… because I still want
+              to fill this site with new stories, more of our moments. I want it
+              to feel like a frame hanging in the living room of our story —
+              something we look at and say, “damn, look at everything we’ve
+              already lived”… and laugh about the behind-the-scenes stuff. Haha.
+              Even from far away, I want you to enjoy this Valentine’s Day with
+              a smile on your face. Live it like I’m right there with you —
+              because in some way, I always am. And you know that. I would
+              travel the world just to live this vibe by your side. Feel the
+              energy of every country, every city, in our own crazy way.
+              Creating memories, collecting stories, living everything
+              intensely. Because when I’m with you, anywhere becomes our own
+              adventure. I know sometimes I’m a little crazy, hyped, sending too
+              many messages… but with you it’s different. I actually want to.
+              The energy is too good to stay quiet. I’m out here feeling like
+              the last romantic alive, but it’s cool… you did that to me. I did
+              all of this from the heart. I hope you feel it in every detail.
+              Because what we have isn’t normal. It’s rare energy. It’s real
+              connection. And this… is just the beginning of our story. ❤️♾️ And
+              of course… our dangerous little way of committing “crimes” out
+              there. But those… we solve in person. Sometimes 👀👀"
             </p>
           </div>
         </section>
@@ -302,23 +351,59 @@ export default function App() {
             <span>{timeLeft.d}</span> jours de pur bonheur ✨
           </p>
 
-          <div className="flex gap-6 overflow-x-auto pb-12 px-6 snap-x snap-mandatory no-scrollbar reveal-section">
-            {moments.map((m, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 snap-center relative w-72 h-[28rem] md:w-80 md:h-[32rem] rounded-[2rem] overflow-hidden glass border border-white/10 group"
-              >
-                {m.type === "video" ? (
-                  <VideoItem src={m.src} />
-                ) : (
-                  <img
-                    src={m.src}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                )}
+          <div className="space-y-8">
+            <div className="glass rounded-[2.5rem] overflow-hidden aspect-[3/4] md:aspect-video relative group border-2 border-white/10 reveal-section shadow-2xl mx-auto max-w-sm md:max-w-4xl">
+              {currentMoment.type === "video" ? (
+                <video
+                  src={currentMoment.src}
+                  className="w-full h-full object-cover"
+                  controls
+                  playsInline
+                />
+              ) : (
+                <img
+                  src={currentMoment.src}
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                />
+              )}
+              <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none">
+                <p className="text-2xl font-semibold italic text-romantic-100">
+                  {currentMoment.desc || "Notre vibe"}
+                </p>
               </div>
-            ))}
+            </div>
+            <div className="flex justify-start md:justify-center gap-4 overflow-x-auto pb-6 px-2 no-scrollbar reveal-section">
+              {moments.map((m, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentMoment(m)}
+                  className={cn(
+                    "flex-shrink-0 w-28 h-28 md:w-36 md:h-36 rounded-3xl overflow-hidden glass border-2 transition-all outline-none relative group",
+                    currentMoment.src === m.src
+                      ? "border-romantic-500 scale-105"
+                      : "border-transparent opacity-70 hover:opacity-100",
+                  )}
+                >
+                  {m.type === "video" ? (
+                    <>
+                      <video
+                        src={m.src}
+                        className="w-full h-full object-cover pointer-events-none"
+                        muted
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <Play className="w-8 h-8 text-white opacity-80" />
+                      </div>
+                    </>
+                  ) : (
+                    <img
+                      src={m.src}
+                      className="w-full h-full object-cover pointer-events-none"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -334,7 +419,7 @@ export default function App() {
               <TimelineEvent
                 date="28 décembre 2025"
                 title="Le début de tout"
-                desc="Demande d'être ensemble"
+                desc="The day where it all began"
                 media={[{ type: "image", src: "/dia-28.jpeg" }]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
@@ -342,29 +427,29 @@ export default function App() {
                 side="right"
                 date="30 décembre 2025"
                 title="Nos moments"
-                desc="Une journée inoubliable"
+                desc="Our First kiss"
                 media={[{ type: "video", src: "/videos/dia-30.MOV" }]}
-                icon={<Heart className="w-6 h-6 md:w-8 md:h-8" />}
+                icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
                 date="31 décembre 2025"
                 title="Nouvel An"
-                desc="Prêts pour 2026"
+                desc="The best turn of the year"
                 media={[{ type: "video", src: "/videos/dia-31.mov" }]}
-                icon={<Quote className="w-6 h-6 md:w-8 md:h-8" />}
+                icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
                 side="right"
                 date="01 Janvier 2026"
                 title="Premier Jour"
-                desc="Le début d'une nouvelle ère"
+                desc="Our first sunset of the year"
                 media={[{ type: "video", src: "/videos/dia-01/01.mov" }]}
                 icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
               <TimelineEvent
                 date="02 Janvier 2026"
                 title="Aventures d'été"
-                desc="Plage, soleil et nous"
+                desc="When I almost crashed the car, with us kissing"
                 media={[
                   { type: "video", src: "/videos/dia-02/01.MOV" },
                   { type: "video", src: "/videos/dia-02/02.MOV" },
@@ -373,15 +458,15 @@ export default function App() {
                   { type: "video", src: "/videos/dia-02/05.MOV" },
                   { type: "video", src: "/videos/dia-02/06.MOV" },
                 ]}
-                icon={<Heart className="w-6 h-6 md:w-8 md:h-8" />}
+                icon={<InfinityIcon className="w-6 h-6 md:w-8 md:h-8" />}
               />
             </div>
           </div>
 
           <div className="mt-40 text-center px-6 pb-20 reveal-section">
             <h3 className="text-3xl md:text-5xl dancing-script text-romantic-300">
-              "Mon amour pour toi n'a pas de fin, il dépasse le temps et
-              l'espace."
+              "Made with love, care, and that energy only we have — for my
+              French girl."
             </h3>
           </div>
 
@@ -397,19 +482,24 @@ export default function App() {
   );
 }
 
-function VideoItem({ src }) {
+const VideoItem = memo(({ src }) => {
   const videoRef = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          videoRef.current.play().catch(() => {});
+          setIsLoaded(true);
+          // Small delay to ensure smooth UI before heavy decoding
+          setTimeout(() => {
+            videoRef.current?.play().catch(() => {});
+          }, 100);
         } else {
-          videoRef.current.pause();
+          videoRef.current?.pause();
         }
       },
-      { threshold: 0.5 },
+      { threshold: 0.1, rootMargin: "100px" }, // Load slightly before entering
     );
 
     if (videoRef.current) observer.observe(videoRef.current);
@@ -417,16 +507,29 @@ function VideoItem({ src }) {
   }, []);
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      muted
-      loop
-      playsInline
-      className="w-full h-full object-cover"
-    />
+    <div className="w-full h-full bg-romantic-900/20 relative">
+      <video
+        ref={videoRef}
+        src={isLoaded ? src : undefined}
+        muted
+        loop
+        playsInline
+        preload="none"
+        className="w-full h-full object-cover transition-opacity duration-500"
+        style={{ opacity: isLoaded ? 1 : 0 }}
+      />
+      {/* Loading Placeholder */}
+      <div
+        className={cn(
+          "absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+          isLoaded ? "opacity-0 pointer-events-none" : "opacity-100",
+        )}
+      >
+        <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+      </div>
+    </div>
   );
-}
+});
 
 function TimelineEvent({
   date,
@@ -450,7 +553,7 @@ function TimelineEvent({
     >
       <div
         className={cn(
-          "w-full md:w-[45%] ml-16 md:ml-0 glass p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] relative group transition-all text-white",
+          "w-[calc(100%-4rem)] md:w-[45%] ml-16 md:ml-0 glass p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] relative group transition-all text-white",
           locked && "opacity-50 grayscale cursor-not-allowed",
         )}
       >
